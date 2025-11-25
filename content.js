@@ -19,6 +19,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     fillState();
     fillPostalCode();
     fillCountry();
+    fillSalaryExpectations();
+    fillRemoteWorkPreference();
+    fillAuthorizedToWork();
+    fillSponsorship();
     sendResponse({ status: "success" });
   }
 
@@ -699,6 +703,114 @@ function fillCountry() {
         if (listContainer) {
           console.log("Found list container");
 
+          // Select the second option (index 1)
+          const buttons = listContainer.querySelectorAll('button[role="option"]');
+
+          if (buttons.length >= 2) {
+            const button = buttons[1]; // Select the second option
+            console.log("Found button:", button.textContent);
+
+            // Try multiple click methods
+            button.focus();
+            button.click();
+
+            // Also dispatch a mouse event in case regular click doesn't work
+            button.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+            button.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
+
+            console.log("Clicked country option (second)");
+          } else if (buttons.length === 1) {
+            // Fallback to first option if only one exists
+            const button = buttons[0];
+            console.log("Only one option found, using:", button.textContent);
+            button.focus();
+            button.click();
+            button.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+            button.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
+          } else {
+            console.log("Button not found");
+          }
+        } else {
+          console.log("List container not found - may need more wait time");
+        }
+      }, 800);
+
+    } else {
+      console.log("Country field not found");
+    }
+  });
+}
+
+function fillSalaryExpectations() {
+  chrome.storage.local.get(['userData'], (result) => {
+    const data = result.userData;
+
+    if (!data) {
+      console.log("No data found in storage");
+      return;
+    }
+
+    const salaryField = document.getElementById('Application_questions_us_annual_salary');
+
+    if (salaryField) {
+      // Focus the field first
+      salaryField.focus();
+
+      // Set the value
+      salaryField.value = data.desiredSalary;
+
+      // Trigger multiple events
+      salaryField.dispatchEvent(new Event('input', { bubbles: true }));
+      salaryField.dispatchEvent(new Event('change', { bubbles: true }));
+      salaryField.dispatchEvent(new Event('keyup', { bubbles: true }));
+      salaryField.dispatchEvent(new Event('keydown', { bubbles: true }));
+
+      // Blur the field
+      salaryField.blur();
+
+      console.log("Salary expectations filled with:", data.desiredSalary);
+    } else {
+      console.log("Salary expectations field not found");
+    }
+  });
+}
+
+function fillRemoteWorkPreference() {
+  chrome.storage.local.get(['userData'], (result) => {
+    const data = result.userData;
+
+    if (!data) {
+      console.log("No data found in storage");
+      return;
+    }
+
+    const remoteWorkField = document.getElementById('input-22');
+
+    if (remoteWorkField) {
+      // Focus and click the field
+      remoteWorkField.focus();
+      remoteWorkField.click();
+
+      // Convert remote work preference to the expected value
+      const remoteWorkValue = data.remoteWorkPreference === "hybrid"
+        ? "Hybrid, 2-3 days in office"
+        : data.remoteWorkPreference;
+
+      // Clear and type the search term
+      remoteWorkField.value = '';
+      remoteWorkField.value = remoteWorkValue;
+
+      // Trigger input event to show dropdown
+      remoteWorkField.dispatchEvent(new Event('input', { bubbles: true }));
+      remoteWorkField.dispatchEvent(new Event('keyup', { bubbles: true }));
+
+      // Wait for dropdown to appear and be clickable
+      setTimeout(() => {
+        const listContainer = document.getElementById('list-20');
+
+        if (listContainer) {
+          console.log("Found list container");
+
           const button = listContainer.querySelector('button[role="option"]');
 
           if (button) {
@@ -712,7 +824,7 @@ function fillCountry() {
             button.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
             button.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
 
-            console.log("Clicked country option");
+            console.log("Clicked remote work preference option");
           } else {
             console.log("Button not found");
           }
@@ -722,7 +834,131 @@ function fillCountry() {
       }, 800);
 
     } else {
-      console.log("Country field not found");
+      console.log("Remote work preference field not found");
+    }
+  });
+}
+
+function fillAuthorizedToWork() {
+  chrome.storage.local.get(['userData'], (result) => {
+    const data = result.userData;
+
+    if (!data) {
+      console.log("No data found in storage");
+      return;
+    }
+
+    const authorizedToWorkField = document.getElementById('input-25');
+
+    if (authorizedToWorkField) {
+      // Focus and click the field
+      authorizedToWorkField.focus();
+      authorizedToWorkField.click();
+
+      // Convert boolean to "Yes" or "No"
+      const authorizedValue = data.authorizedToWork ? "Yes" : "No";
+
+      // Clear and type the search term
+      authorizedToWorkField.value = '';
+      authorizedToWorkField.value = authorizedValue;
+
+      // Trigger input event to show dropdown
+      authorizedToWorkField.dispatchEvent(new Event('input', { bubbles: true }));
+      authorizedToWorkField.dispatchEvent(new Event('keyup', { bubbles: true }));
+
+      // Wait for dropdown to appear and be clickable
+      setTimeout(() => {
+        const listContainer = document.getElementById('list-23');
+
+        if (listContainer) {
+          console.log("Found list container");
+
+          const button = listContainer.querySelector('button[role="option"]');
+
+          if (button) {
+            console.log("Found button:", button.textContent);
+
+            // Try multiple click methods
+            button.focus();
+            button.click();
+
+            // Also dispatch a mouse event in case regular click doesn't work
+            button.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+            button.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
+
+            console.log("Clicked authorized to work option");
+          } else {
+            console.log("Button not found");
+          }
+        } else {
+          console.log("List container not found - may need more wait time");
+        }
+      }, 800);
+
+    } else {
+      console.log("Authorized to work field not found");
+    }
+  });
+}
+
+function fillSponsorship() {
+  chrome.storage.local.get(['userData'], (result) => {
+    const data = result.userData;
+
+    if (!data) {
+      console.log("No data found in storage");
+      return;
+    }
+
+    const sponsorshipField = document.getElementById('input-28');
+
+    if (sponsorshipField) {
+      // Focus and click the field
+      sponsorshipField.focus();
+      sponsorshipField.click();
+
+      // Convert boolean to "Yes" or "No"
+      const sponsorshipValue = data.requireSponsorship ? "Yes" : "No";
+
+      // Clear and type the search term
+      sponsorshipField.value = '';
+      sponsorshipField.value = sponsorshipValue;
+
+      // Trigger input event to show dropdown
+      sponsorshipField.dispatchEvent(new Event('input', { bubbles: true }));
+      sponsorshipField.dispatchEvent(new Event('keyup', { bubbles: true }));
+
+      // Wait for dropdown to appear and be clickable
+      setTimeout(() => {
+        const listContainer = document.getElementById('list-26');
+
+        if (listContainer) {
+          console.log("Found list container");
+
+          const button = listContainer.querySelector('button[role="option"]');
+
+          if (button) {
+            console.log("Found button:", button.textContent);
+
+            // Try multiple click methods
+            button.focus();
+            button.click();
+
+            // Also dispatch a mouse event in case regular click doesn't work
+            button.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+            button.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
+
+            console.log("Clicked sponsorship option");
+          } else {
+            console.log("Button not found");
+          }
+        } else {
+          console.log("List container not found - may need more wait time");
+        }
+      }, 800);
+
+    } else {
+      console.log("Sponsorship field not found");
     }
   });
 }
