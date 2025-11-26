@@ -1,6 +1,7 @@
 document.getElementById('autofill').addEventListener('click', () => {
   const testData = {
-    "resumeUrl": "https://example.com/resume.pdf",
+    //"resumeUrl": "https://example.com/resume.pdf",
+    "resumeUrl": "https://drive.google.com/file/d/1xeQd46vMhKSat558qn87RBsSMgUKUkeR/view?usp=sharing",
     "firstName": "John",
     "lastName": "Doe",
     "email": "john.doe@example.com",
@@ -15,7 +16,8 @@ document.getElementById('autofill').addEventListener('click', () => {
     "disabilityStatus": "No",
     "veteranStatus": "Not a Veteran",
     "willingToRelocate": true,
-    "coverLetterUrl": "https://example.com/coverletter.pdf",
+    //"coverLetterUrl": "https://example.com/coverletter.pdf",
+    "coverLetterUrl": "https://drive.google.com/file/d/1xeQd46vMhKSat558qn87RBsSMgUKUkeR/view?usp=sharing",
     "currentAddress": {
       "street": "123 Main Street",
       "city": "San Francisco",

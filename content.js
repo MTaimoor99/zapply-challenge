@@ -23,6 +23,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     fillRemoteWorkPreference();
     fillAuthorizedToWork();
     fillSponsorship();
+    uploadResume();
+    uploadCoverLetter();
     sendResponse({ status: "success" });
   }
 
@@ -959,6 +961,125 @@ function fillSponsorship() {
 
     } else {
       console.log("Sponsorship field not found");
+    }
+  });
+}
+
+async function uploadResume() {
+  chrome.storage.local.get(['userData'], async (result) => {
+    const data = result.userData;
+
+    if (!data) {
+      console.log("No data found in storage");
+      return;
+    }
+
+    // Find the resume file input element using the parent class
+    const fileInput = document.querySelector('.upload-resume-dropzone input[type="file"]');
+
+    if (!fileInput) {
+      console.log("Resume file input not found");
+      return;
+    }
+
+    try {
+      console.log("Downloading resume from:", data.resumeUrl);
+
+      // Fetch the resume from the URL
+      const response = await fetch(data.resumeUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch resume: ${response.statusText}`);
+      }
+
+      // Get the blob from the response
+      const blob = await response.blob();
+
+      // Extract filename from URL or use default
+      const urlParts = data.resumeUrl.split('/');
+      const filename = urlParts[urlParts.length - 1] || 'resume.pdf';
+
+      // Create a File object from the blob
+      const file = new File([blob], filename, { type: blob.type });
+
+      // Create a DataTransfer object to simulate file selection
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(file);
+
+      // Assign the files to the input element
+      fileInput.files = dataTransfer.files;
+
+      // Trigger change event
+      fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+      fileInput.dispatchEvent(new Event('input', { bubbles: true }));
+
+      console.log("Resume uploaded successfully:", filename);
+
+      // Wait for the dialog to appear and click the confirm button
+      setTimeout(() => {
+        const confirmButton = document.getElementById('confirmUploadResume');
+        if (confirmButton) {
+          confirmButton.click();
+          console.log("Clicked resume confirm button");
+        } else {
+          console.log("Confirm button not found");
+        }
+      }, 500);
+    } catch (error) {
+      console.error("Error uploading resume:", error);
+    }
+  });
+}
+
+async function uploadCoverLetter() {
+  chrome.storage.local.get(['userData'], async (result) => {
+    const data = result.userData;
+
+    if (!data) {
+      console.log("No data found in storage");
+      return;
+    }
+
+    // Find the cover letter file input element using the parent class
+    const fileInput = document.querySelector('.file-upload-Cover_Letter_cover_letter input[type="file"]');
+
+    if (!fileInput) {
+      console.log("Cover letter file input not found");
+      return;
+    }
+
+    try {
+      console.log("Downloading cover letter from:", data.coverLetterUrl);
+
+      // Fetch the cover letter from the URL
+      const response = await fetch(data.coverLetterUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch cover letter: ${response.statusText}`);
+      }
+
+      // Get the blob from the response
+      const blob = await response.blob();
+
+      // Extract filename from URL or use default
+      const urlParts = data.coverLetterUrl.split('/');
+      const filename = urlParts[urlParts.length - 1] || 'cover_letter.pdf';
+
+      // Create a File object from the blob
+      const file = new File([blob], filename, { type: blob.type });
+
+      // Create a DataTransfer object to simulate file selection
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(file);
+
+      // Assign the files to the input element
+      fileInput.files = dataTransfer.files;
+
+      // Trigger change event
+      fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+      fileInput.dispatchEvent(new Event('input', { bubbles: true }));
+
+      console.log("Cover letter uploaded successfully:", filename);
+    } catch (error) {
+      console.error("Error uploading cover letter:", error);
     }
   });
 }
