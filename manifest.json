@@ -8,6 +8,16 @@
   "action": {
     "default_popup": "popup.html"
   },
+   "externally_connectable": {
+    "ids": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    ],
+    "matches": [
+    "https://ptc.eightfold.ai/careers/apply?*"
+    ],
+    "accepts_tls_channel_id": false
+  },
   "content_scripts": [
     {
       "matches": ["https://ptc.eightfold.ai/careers/apply?*"],
